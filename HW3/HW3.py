@@ -1,4 +1,4 @@
-# HW2 MATH 8250 Problem 4
+# HW3 MATH 8250 Problem 5
 
 import os
 import numpy as np
@@ -18,15 +18,13 @@ sen_party = sen_party[-1]
 sen_party = np.reshape(sen_party, (-1, 1))
 data = pd.DataFrame(data.values)
 
-def norm_eig(X,k):
-    cov = X.T @ X
-    cov_norm = cov / scipy.linalg.norm(cov, axis = 0)
-    eval, evec = scipy.linalg.eig(cov_norm)
-    idx = eval.argsort()[::-1]
-    eval = eval[idx]
-    evec = evec[:,idx]
-    V = evec[:,:k]
-    return V
+def us(X,k):
+    C = X.T @ X
+    C = C/(len(X)-1)
+    eval, evec = scipy.linalg.eig(C)
+    u_s = X @ evec
+    u_s = u_s.iloc[:,0:k]
+    return u_s
 
 
 # Part B
@@ -38,9 +36,7 @@ k = 2
 centers = st.tmean(data, axis  = 0)
 data = data - centers
 
-V = norm_eig(data,k)
-
-proj_2d = data @ V
+proj_2d = us(data,k)
 
 cdict = {'R': 'red', 'D': 'blue', 'I': 'yellow'}
 
@@ -71,9 +67,7 @@ diff = center_d - center_r
 
 proj_diff = data @ diff
 
-V2 = norm_eig(data,1)
-
-proj_1d = data @ V2
+proj_1d = us(data,1)
 
 fig2, ax2 = plt.subplots()
 for g in np.unique(sen_party):
