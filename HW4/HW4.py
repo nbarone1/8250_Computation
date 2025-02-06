@@ -1,4 +1,4 @@
-# HW 4
+# HW 4 Problem 2
 
 import os
 import numpy as np
@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 
 cwd = os.getcwd()
 print(cwd)
-
-
 
 def load_MNIST(N=None, s=1):
     print("Loading MNIST dataset...")
@@ -37,16 +35,28 @@ def show_image(x):
     plt.imshow(x.reshape(28, 28), cmap='gray')
     plt.show()
 
-def us(X,k):
-    U,S,V = scipy.linalg.svd(X)
-    u_s = 
-    return u_s.astype('float64')
+def norm_eig(X,k):
+    cov = X.T @ X
+    # cov_norm = cov / scipy.linalg.norm(cov, axis = 0)
+    # eval, evec = scipy.linalg.eig(cov_norm)
+    eval, evec = scipy.linalg.eig(cov)
+    idx = eval.argsort()[::-1]
+    eval = eval[idx]
+    evec = evec[:,idx]
+    V = evec[:,:k]
+    return V
 
 X,Y = load_MNIST(1000)
 
 show_image(X[0])
 
-X_p = us(X,100)
+# k = 10 has the shape but it blurry
+# k = 25 starts gets worse
+# k = 15 things are still worse than 10
+# k = 8 yielded mild results
 
-show_image(X_p[0])
+V = norm_eig(X,8)
 
+X_p = V @ V.T @ X[0]
+
+show_image(X_p.astype('float64'))
