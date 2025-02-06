@@ -2,6 +2,7 @@
 
 import random
 import numpy as np
+from scipy import stats as st
 
 def rand():
     return random.randint(1,4)
@@ -33,3 +34,18 @@ def sample_data(n,p,m):
 
 # C
 
+def row_centering(X):
+    centers = st.tmean(X, axis  = 1)
+    X = X - centers
+    return X
+
+def M_squared(X):
+    C = X.T @ X
+    C = C/(len(X)-1)
+    M = np.linalg.cholesky(C)
+    return M
+
+def z_transform(X):
+    Y = row_centering(X)
+    M = M_squared(Y)
+    Z = np.linalg.inv(M) @ Y
