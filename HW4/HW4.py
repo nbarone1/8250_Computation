@@ -25,7 +25,7 @@ def load_MNIST(N=None, s=1):
     # subsample N
     if N is not None:
         # idx = np.random.choice(X.shape[0], N, replace=False)
-        X = X[N]
+        X = X[:N,:]
         # X = X[idx]
         # y = y[idx]
 
@@ -38,20 +38,15 @@ def show_image(x):
     plt.show()
 
 def us(X,k):
-    C = X.T @ X
-    C = C/(len(X)-1)
-    eval, evec = scipy.linalg.eig(C)
-    u_s = X @ evec
+    U,S,V = scipy.linalg.svd(X)
+    u_s = 
     return u_s.astype('float64')
 
-X,Y = load_MNIST()
+X,Y = load_MNIST(1000)
 
-centers = st.tmean(X, axis  = 0)
-X = X - centers
+show_image(X[0])
 
-show_image(X[1])
+X_p = us(X,100)
 
-X_p = us(X,1000)
-
-show_image(X_p[1])
+show_image(X_p[0])
 
