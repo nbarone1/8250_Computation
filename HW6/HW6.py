@@ -31,3 +31,23 @@ plt.show()
 
 x = np.linspace(1,2,1000)
 
+a1 = np.exp(x)
+a2 = np.sin(x)
+a3 = gamma(x)
+A = np.hstack((a1.reshape(-1,1),a2.reshape(-1,1),a3.reshape(-1,1)))
+
+Y2 = 1/x
+
+alpha = np.linalg.inv(A.T @ A) @ A.T @ Y2
+
+est_a = alpha[0]*a1 + alpha[1]*a2 + alpha[2]*a3
+
+loss2 = np.linalg.norm(Y2-est_a)
+
+fig2, ax2 = plt.subplots()
+ax2.scatter(x,Y2, c= "red")
+ax2.plot(x,est_a, c = "blue")
+plt.title(loss2)
+plt.show()
+
+# Problem 3
