@@ -3,6 +3,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import gamma
+import scipy.io as sio
+
+max_iter = 100
+
+tol = 1e-6
 
 # Problem 1
 
@@ -51,3 +56,30 @@ plt.title(loss2)
 plt.show()
 
 # Problem 3
+
+b = sio.mmread('X.mtx')
+
+D = b @ b.T
+
+n = D.shape
+
+U = np.random.normal(0, 1, size=(n,2))
+
+def rand_eig(U,D):
+    S = D @ U
+    Q,R = np.linalg.qr(S)
+    B = Q.T @ D
+    Uhat, Sigma, V = np.linalg.svd(B)
+    U = Q @ Uhat
+    return U
+
+
+def random_matrix(U,D,max_iter,tol):
+    for i in range(max_iter):
+        U_n = rand_eig(U,D)
+        if np.linalg.norm(U-U_n) < tol:
+            break
+        U = U_n
+    return U
+
+print(random_matrix(U,D,max_iter,tol))

@@ -14,18 +14,25 @@ print(cwd)
 
 def load_MNIST(N=None, s=1):
     print("Loading MNIST dataset...")
-    data = pd.read_csv(cwd+'\HW4\mnist.csv', header=None)
+    data = pd.read_csv("C:\Users\\npb28.la\Downloads\mnist.csv", header=None)
     y = data.iloc[:, 0].to_numpy()
     X = data.iloc[:, 1:].to_numpy()
-    #X = X/255
+    X = X/255
 
 
     # subsample N
+
+    for i in range(len(y)):
+        if y[i] == 3:
+            y[i] == 1
+        else:
+            y[i] == 0
+
     if N is not None:
         # idx = np.random.choice(X.shape[0], N, replace=False)
         X = X[:N,:]
         # X = X[idx]
-        # y = y[idx]
+        y = y[:N,:]
 
 
     return X, y
