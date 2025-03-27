@@ -76,3 +76,64 @@ plt.savefig(r"C:\\Users\\npb28.la\\8250_Computation\\HW9\\logistic_regression_ou
 plt.show()
 
 pred(X,alpha_opt)
+
+
+# Problem 3 (b)
+
+def kernel(b,z,d):
+    p = b*z.T@z + 1
+    r = pow(p,d)
+    return r
+
+def sigmoid(b,z,d):
+     y = 1/(1+(np.exp((kernel(b,z,d)))))
+     return y
+
+def ll_2(b,z,y,d):
+    m = X.shape[1]
+    A = sigmoid(b,z,d)
+    cost = -1.0/m*np.sum(y*np.log(A)+(1.0-y)*np.log(1.0-A))   
+    return cost
+
+def ll_grad(alpha, x, y,d):
+    grad = np.zeros_like(alpha)
+    for i in range(len(alpha)):
+        grad += (sigmoid(-alpha @ x[i],x,d) - (1 - y[i])) * x[i]
+    return grad
+
+
+def ll_hessian(alpha, x,d,y, rho):
+    h = np.zeros((x.shape[1], x.shape[1]))
+    for i in range(len(alpha)):
+        sig = sigmoid(alpha,x,d)
+        h -= sig * (1 - sig) * np.outer(x[i], x[i])
+    return h + rho * np.eye(h.shape[0])
+
+
+def newton_method(x, y, d, lr, rho, num_iter, v=False):
+    alpha = 0
+    for i in range(num_iter):
+        alpha = alpha + lr * (np.linalg.inv(ll_hessian(alpha, x,y,d, rho)) @ ll_grad(alpha, x, y,d))
+        if v:
+            print(ll_2(alpha, x, y,d))
+        rho *= 0.99
+    return alpha
+
+def min_2(x,y,d):
+    alpha_init = np.zeros(3)
+    res = minimize(ll,alpha_init, args = (x,y),method = "BFGS")
+    print(f'Optimal Alpha: {res}')
+    return res
+
+X = prep(data_x)
+
+d1 = 5
+
+d2 = 50
+
+beta5 = min_2(X,group,d1).x
+
+beta50 = min_2(X,group,d2).x
+
+yy_25 = -(beta5[0] + beta5[1] * xx) / beta5[2]
+yy_250 = -(beta50[0] + beta50[1] * xx) / beta50[2]
